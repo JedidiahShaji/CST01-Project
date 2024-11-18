@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultural Appropriateness Bot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="chatbox">
+            <h1>Cultural Appropriateness Bot</h1>
+            <p class="description">Enter a sentence below to check if it is culturally appropriate, inappropriate, or neutral.</p>
+            <form id="chat-form">
+                <input type="text" id="sentence" name="sentence" placeholder="Type your sentence here..." required>
+                <button type="submit">Classify</button>
+            </form>
+        </div>
+
+        <!-- Result Section -->
+        <div id="result" class="result" style="display: none;">
+            <h3 id="prediction"></h3>
+            <p id="explanation"></p>
+
+            <!-- Feedback Section -->
+            <div id="feedback">
+                <p>Do you agree with this prediction?</p>
+                <button id="agree-btn" class="feedback-btn">Agree</button>
+                <button id="disagree-btn" class="feedback-btn">Disagree</button>
+            </div>
+            <p id="feedback-message" style="display: none;"></p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent page reload
+
+            const sentence = document.getElementById('sentence').value;
+            const resultDiv = document.getElementById('result');
+            const predictionEl = document.getElementById('prediction');
+            const explanationEl = document.getElementById('explanation');
+
+            // Send the sentence to the Flask server
+            const response = await fetch('/classify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ sentence })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                predictionEl.textContent = `Prediction: ${data.prediction}`;
+                explanationEl.textContent = `Explanation: ${data.explanation}`;
+                resultDiv.style.display = 'block';
+            } else {
+                predictionEl.textContent = 'Error: Unable to classify.';
+                explanationEl.textContent = '';
+                resultDiv.style.display = 'block';
+            }
+        });
+
+        // Handle feedback
+        const feedbackButtons = document.querySelectorAll('.feedback-btn');
+        feedbackButtons.forEach(button => {
+            button.addEventListener('click', async function () {
+                const feedback = this.id === 'agree-btn' ? 'Agree' : 'Disagree';
+                const sentence = document.getElementById('sentence').value;
+                const prediction = document.getElementById('prediction').textContent.split(': ')[1];
+                const feedbackMessage = document.getElementById('feedback-message');
+
+                // Send feedback to the Flask server
+                const response = await fetch('/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sentence, prediction, feedback })
+                });
+
+                if (response.ok) {
+                    feedbackMessage.textContent = 'Thank you for your feedback!';
+                    feedbackMessage.style.display = 'block';
+                } else {
+                    feedbackMessage.textContent = 'Error submitting feedback. Please try again.';
+                    feedbackMessage.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

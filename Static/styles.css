@@ -1,0 +1,124 @@
+/* Reset default styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Arial', sans-serif;
+    background: #1a1a1a; /* Matte black */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff; /* Default text color */
+}
+
+/* Main container */
+.container {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Chatbox header */
+.chatbox h1 {
+    font-size: 2rem;
+    color: #ff4c4c; /* Matte red */
+    margin-bottom: 10px;
+}
+
+.chatbox .description {
+    font-size: 1rem;
+    color: #cccccc; /* Light gray for contrast */
+    margin-bottom: 20px;
+}
+
+/* Input field */
+form input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 2px solid #ff4c4c; /* Matte red */
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+form input[type="text"]:focus {
+    border-color: #e63939; /* Slightly darker red */
+    box-shadow: 0px 5px 10px rgba(255, 76, 76, 0.2);
+}
+
+/* Button styling */
+form button {
+    width: 100%;
+    padding: 15px;
+    background-color: #ff4c4c; /* Matte red */
+    color: white; /* White text */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+form button:hover {
+    background-color: #e63939; /* Darker red on hover */
+    box-shadow: 0px 8px 20px rgba(255, 76, 76, 0.3);
+}
+
+/* Result box */
+.result {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.result h3 {
+    color: #333;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.result p {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+
+#feedback {
+    margin-top: 15px;
+}
+
+.feedback-btn {
+    padding: 10px 20px;
+    background-color: #ff4c4c; /* Matte red */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.feedback-btn:hover {
+    background-color: #e63939;
+    box-shadow: 0px 5px 15px rgba(255, 76, 76, 0.3);
+}
+
+#feedback-message {
+    margin-top: 15px;
+    font-size: 1rem;
+    color: #58cc02; /* Green for success */
+}
+
