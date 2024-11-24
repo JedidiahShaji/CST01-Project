@@ -23,12 +23,12 @@
             <p id="explanation"></p>
 
             <!-- Feedback Section -->
-            <div id="feedback">
+            <div id="feedback" style="display: none;">
                 <p>Do you agree with this prediction?</p>
                 <button id="agree-btn" class="feedback-btn">Agree</button>
                 <button id="disagree-btn" class="feedback-btn">Disagree</button>
             </div>
-            <p id="feedback-message" style="display: none;"></p>
+            <p id="feedback-message" style="display: none; color: green;"></p>
         </div>
     </div>
 
@@ -36,31 +36,48 @@
     <script>
         document.getElementById('chat-form').addEventListener('submit', async function (event) {
             event.preventDefault(); // Prevent page reload
-
+    
             const sentence = document.getElementById('sentence').value;
             const resultDiv = document.getElementById('result');
             const predictionEl = document.getElementById('prediction');
             const explanationEl = document.getElementById('explanation');
-
+            const feedbackDiv = document.getElementById('feedback');
+            const feedbackMessage = document.getElementById('feedback-message');
+    
+            // Clear feedback section and hide result by default
+            feedbackDiv.style.display = 'none'; // Always hide feedback initially
+            feedbackMessage.style.display = 'none';
+            resultDiv.style.display = 'none'; // Reset result visibility
+    
             // Send the sentence to the Flask server
             const response = await fetch('/classify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ sentence })
             });
-
+    
             if (response.ok) {
                 const data = await response.json();
-                predictionEl.textContent = `Prediction: ${data.prediction}`;
+    
+                // Display the prediction and explanation
+                predictionEl.textContent = `PREDICTION: ${data.prediction}`;
                 explanationEl.textContent = `Explanation: ${data.explanation}`;
                 resultDiv.style.display = 'block';
+    
+                // Only show feedback section for valid cultural predictions
+                if (data.prediction !== 'INVALID INPUT' && data.prediction !== 'Unrelated to cultural context') {
+                    feedbackDiv.style.display = 'block';
+                } else {
+                    feedbackDiv.style.display = 'none'; // Ensure feedback section is hidden
+                    feedbackMessage.style.display = 'none'; // Ensure feedback message is hidden
+                }
             } else {
                 predictionEl.textContent = 'Error: Unable to classify.';
                 explanationEl.textContent = '';
                 resultDiv.style.display = 'block';
             }
         });
-
+    
         // Handle feedback
         const feedbackButtons = document.querySelectorAll('.feedback-btn');
         feedbackButtons.forEach(button => {
@@ -69,14 +86,21 @@
                 const sentence = document.getElementById('sentence').value;
                 const prediction = document.getElementById('prediction').textContent.split(': ')[1];
                 const feedbackMessage = document.getElementById('feedback-message');
-
+    
+                // Only allow feedback for valid predictions
+                if (prediction === 'INVALID INPUT' || prediction === 'Unrelated to cultural context') {
+                    feedbackMessage.textContent = 'Feedback is not allowed for invalid entries.';
+                    feedbackMessage.style.display = 'block';
+                    return;
+                }
+    
                 // Send feedback to the Flask server
                 const response = await fetch('/feedback', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ sentence, prediction, feedback })
                 });
-
+    
                 if (response.ok) {
                     feedbackMessage.textContent = 'Thank you for your feedback!';
                     feedbackMessage.style.display = 'block';
@@ -87,5 +111,8 @@
             });
         });
     </script>
+    
+    
+    
 </body>
 </html>
